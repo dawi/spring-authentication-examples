@@ -16,3 +16,5 @@ pluginManagement {
 }
 
 rootProject.name = "spring-authentication-examples"
+
+include("keycloak-saml-1-legacy")
