@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+
+  mysql:
+    image: mysql:8.0.21
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: keycloak
+      MYSQL_USER: keycloak
+      MYSQL_PASSWORD: keycloak
+    volumes:
+      - $HOME/Development/docker/spring-authentication-examples/mysql:/var/lib/mysql
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:11.0.2
+    depends_on:
+      - mysql
+    environment:
+      DB_VENDOR: MYSQL
+      DB_ADDR: mysql
+      DB_PORT: 3306
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: keycloakdm
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_LOGLEVEL: DEBUG
+    ports:
+      - 8081:8080
+    volumes:
+      - $HOME/Development/docker/spring-authentication-examples/keycloak:/var/lib/mysql
