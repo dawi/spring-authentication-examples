@@ -19,3 +19,4 @@ rootProject.name = "spring-authentication-examples"
 
 include("keycloak-saml-1-legacy")
 include("keycloak-saml-2-only-application-properties")
+include("keycloak-saml-3-only-java-config")
