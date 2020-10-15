@@ -1,0 +1,30 @@
+logging:
+  level:
+    root: info
+    org.springframework.security: debug
+    org.springframework.security.saml2: trace
+
+spring:
+  security:
+    saml2:
+      relyingparty:
+        registration:
+
+          demo-saml-client:
+            entity-id: demo-saml-client
+            signing:
+              credentials:
+                - private-key-location: "classpath:credentials/signing.key"
+                  certificate-location: "classpath:credentials/signing.crt"
+            decryption:
+              credentials:
+                - private-key-location: "classpath:credentials/encryption.key"
+                  certificate-location: "classpath:credentials/encryption.crt"
+
+            identityprovider:
+              entity-id: 'http://localhost:8081/auth/realms/DemoRealm'
+              verification.credentials:
+                - certificate-location: "classpath:credentials/realm.crt"
+              singlesignon.url: http://localhost:8081/auth/realms/DemoRealm/protocol/saml
+              singlesignon.binding: POST
+              singlesignon.sign-request: true
