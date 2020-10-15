@@ -1,69 +1,63 @@
 # Spring Authentication Examples
 
-# Keys
+I started this playground project because I had a few problems configuring SAML2 with Keycloak and [Spring Security SAML 2.0](https://docs.spring.io/spring-security/site/docs/5.4.1/reference/html5/#servlet-saml2).
+Thomas Darimonts article [How to secure a Spring Boot app with SAML and Keycloak](https://blog.codecentric.de/en/2019/03/secure-spring-boot-app-saml-keycloak/) and the corresponding [spring-boot-security-saml-sample](https://github.com/thomasdarimont/spring-boot-security-saml-sample/tree/poc/keycloak-saml-idp) helped me a lot to get started. 
+
+## Keycloak SAML authentication examples
+
+* [keycloak-saml-1-legacy](keycloak-saml-1-legacy) (this basically is Thomas Darimonts [spring-boot-security-saml-sample](https://github.com/thomasdarimont/spring-boot-security-saml-sample/tree/poc/keycloak-saml-idp))
+* [keycloak-saml-2-only-application-properties](keycloak-saml-2-only-application-properties)
+* [keycloak-saml-3-only-java-config](keycloak-saml-3-only-java-config)
+* [keycloak-saml-4-with-metadata-reloading](keycloak-saml-4-with-metadata-reloading)
+* [keycloak-saml-5-with-bootiful-metadata-reloading](keycloak-saml-5-with-bootiful-metadata-reloading)
+* [keycloak-saml-6-with-metadata-caching-and-reloading](keycloak-saml-6-with-metadata-caching-and-reloading)
+
+## Keycloak realm configuration (required by this examples)
+
+* Realm export ([realm-export.json](keycloak/realm-export.json))
+* Signing Key ([X509 Certificate](keycloak/certificates/signing.crt), [X509 Private Key](keycloak/certificates/signing.key), [JKS Keystore](keycloak/keystores/signing-key-keystore.jks), [P12 Keystore](keycloak/keystores/signing-key-keystore.p12))
+* Encryption Key ([X509 Certificate](keycloak/certificates/encryption.crt), [X509 Private Key](keycloak/certificates/encryption.key), [JKS Keystore](keycloak/keystores/encryption-key-keystore.jks), [P12 Keystore](keycloak/keystores/encryption-key-keystore.p12))
+
+# Documentation
+
+## Keycloak Installation and Configuration
+
+* docker-compose up
+* Import realm
+* Create user in `DemoRealm`
+* Start example
+* Login
+
+## Metadata URLs
+
+### IDP Metadata URL
+* http://localhost:8081/auth/realms/DemoRealm/protocol/saml/descriptor `IDP`
+
+### SP Metadata URLs
+
+They are configurable, but currently the `registrationId` needs to be part of the URL.  
  
-## Signing Key
+* http://localhost:8080/saml/metadata `Default if legacy library is used (example 1)`
+* http://localhost:8080/saml2/service-provider-metadata/demo-saml-client `DEFAULT (example 3)`  
+* http://localhost:8080/saml/metadata `HACK (example 4)`
+* http://localhost:8080/saml/metadata/demo-saml-client `ADJUSTED (example 5 and 6)`
 
-### Private Key
+## About Keycloak Configuration
 
-```
-MIIEogIBAAKCAQEAr8vb0nnq9A+PO6OxDmYLKAeRRk18ZZIALrjQzSFKgEBg9+iFsNBmoLYfhLh/HXNk/8QnTxJerwtaq5t7/brRYVpHOB/T6yfTnjSFbHEH5rYF8iXPmEbKe55Pu+u1mA5VkRMvUSysiWYiuiaGFSk4mHQnCAe4SPcFCUzlj5Q6+pUlRTzG+sB8YYrfb4D5J43Ff2Wz4U/pohGB+Y8Odp5kXdmAZ4W21vMEgrF02LJFIkeajnyISPpWKm4uRD0RoU0OPVu+cuodlUDgVZ+olrRT23VnBit1ZvALAH/Gm0a9AdPZhGT27JYh/uoYopAG0EFXly2vUlVvTg7iPkc+MTLaVwIDAQABAoIBAHx8xxC4Jypnbk2UcEg6+MGDAlwfeOzQQ/LSC4KHhaNmc4R6k1mPam16Kr2ojNOFKMt500BKSOR6DN4i/93Ako73CCH1X/NRQ6jvlmAhdq/ozDMalXRHBRIfHGV92B1yYSOXy1UXZqLxwbvClgacJyjGb/FeziBVVKquWo2fMVjKX8fVdvrq2YlJ+WGIzqy9LNnYwmOO9ZM9nBhxsAi0mHU/3nNLScC3hQuqISHvAbwBI/dT/cFFLVYhlh2BQf1oSmSjTOV7znmJDCNG+GPZKrCLs8ZJ1p9HM72GBWy66HyFIYVwGgithdUEnLc5H9Nf7cOAcqwx4390Yf0vf1jFaOECgYEA83spE4VSSswmToT1zvX7ksqXaRpqY1EXZ5tJ604GM06h3MFxIZ2JcgG392tt9wsdUU6pHf6uyy/f82eIj44QI8321WrQjF/wj+tlcoSvdCW3NYTPovlqPYsnVct1y3YJML1pXJiHenLGHuR1anSppYdJrkISRH9mhnTIjdcuMVECgYEAuNXKvVjbjJ290ze/NXAnIw/yN7YXp6erCEfJj7nG0w8pDl/uxPBqVyBwy3mLiBwJYeBeZQmRluLuJM1txBgzchKaU3CVVAmcmsVqJJ+tQIU0OJw1QN85E/qHe50jJPLrJ6KSmZRRTE0rxXjmITCg4n3e80wQy5Rm6vH1dcvGJycCgYAgUIZBGv6zAqlK3oapMyhycQTrZCAeklKi449J9Y8JHDSLUfkr1va49NVvtwhfM1BuzBvR6U1VlkMI0QLk2pv1xI4wAP8wwkLxNvK94jJPHfpU1g2gua2KAX/0+Q3nNQE/QMRND8lbTQRScUvMFzO0zmHPCOHXyXjX+4Pqn1Z4IQKBgD5P5O98m1eGfk5MxutvCeKqJ5BclRDyV5iNCwinKr5QqBiugsJmApOo3h3atg2G1irnByus1CY4DuzdTJoFRqK4Xsquc8lHDEKpNyVtp2zO+1HyZ4mdN5LirPYhfY2hT2GnTyDzfYzpn04NehfKWxLAOH9xL2BSgXfHZmb18bGVAoGAWA4PACj6Q/zNYRs2Ebk6LQKzLwM09KYZCweNX7cyfBoQmlbCuZP7sBxCk6h7HURFd+cXlD6QJ7OaPCG70fb/xvQn8tSbWKgkZM7KZVFIQmcT5LSRcI2ejrr+sFZ+1teaFUJPYBx5uGj2OnVEaJgbyLc3uFwL30KGhqCXVjKMG+4=
-```
+In a Keycloak SAML client configuration it is possible to manage `signing` and `encryption` keys.  
+*Keycloak does not need to know the signing an encryption private keys.*  
+It is possible to `Generate new keys`, `Import` and `Export` keys.  
+If you generate new keys, keycloak stores both, the public and the private key, so that you can later export it as either JKS or PKCS12 keystore.    
+If you import existing keystores, only the public key will be stored.
 
-### Certificate
+### Signing Key
 
-```
-MIICuzCCAaMCBgF1CMEg2zANBgkqhkiG9w0BAQsFADAhMR8wHQYDVQQDDBZjb206bGF1ZGVydDpkZW1vOnJlYWxtMB4XDTIwMTAwODE1MDYxNVoXDTMwMTAwODE1MDc1NVowITEfMB0GA1UEAwwWY29tOmxhdWRlcnQ6ZGVtbzpyZWFsbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK/L29J56vQPjzujsQ5mCygHkUZNfGWSAC640M0hSoBAYPfohbDQZqC2H4S4fx1zZP/EJ08SXq8LWqube/260WFaRzgf0+sn0540hWxxB+a2BfIlz5hGynueT7vrtZgOVZETL1EsrIlmIromhhUpOJh0JwgHuEj3BQlM5Y+UOvqVJUU8xvrAfGGK32+A+SeNxX9ls+FP6aIRgfmPDnaeZF3ZgGeFttbzBIKxdNiyRSJHmo58iEj6VipuLkQ9EaFNDj1bvnLqHZVA4FWfqJa0U9t1ZwYrdWbwCwB/xptGvQHT2YRk9uyWIf7qGKKQBtBBV5ctr1JVb04O4j5HPjEy2lcCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAqPxoCwv1V1NqiikEQ5gvr1zBye7nu3OnCcxjvErX8Yr+SRCzfcImTe+5m6jvO7kEKKQIFMMMSX+NM2dD3ujMHtKWNFgf4SS+kIRHwX/rfz9XYV9kiutnrS6Y/hNziq3tzzOUyqC3pXoDI0GhOICyUXyu+s2Qep+/gTvQH2QsY3YjIWu5uVIw6OdMqYaiD7apD9WSvmwPILiSqDGFAyD/TuX/sY5mHrEhSRaFiH2scHMeNb80zmXzryemkWtdaNBc/gxKSB9J9jc/L/WbPFV2l9CUD02VTH/C7DKZXZ0iQPHhokGZ4TEu5ts137zlcMszV8dYitgQs63LIEjZdFtqrg==
-```
+This key has to be configured if `Client Signature Required` is `true`.  
+The client uses the private key to sign a SAML-Request and Keycloak uses the public key to verify it.  
+**Keycloak does not need to know the private key.**
 
-## Encryption Key 
+### Encryption Key
 
-### Private Key
-
-```
-MIIEpAIBAAKCAQEA0ZpUoRuBQHxgs2ZW1kIgYGm3eMYPy1EWIyXbnVoM6Ys9SyjBcoMcG3bfLrCOTCMInuOOVhbIe1hbmVqFAW4O+g5Juw67t/KInZR4QeXMmEqy7BKhL4TCvx87EPMwH1zumAFisZUJJnhLl6nlwlk6qVTlyjJoMjLwkgxPuIkGrWgq3ufcjOg+hkdF5jvP8iGSvENdPAGbIbRiaqw3+MAEZ+h1uGzLRxUBMKozLOGthPnZi3LLJ2Wtt/vxzcjCW8AI3ZQyQFVZppm1V7bFpmT8sHLp1mMYXcaeqTgqR2sYmh2WuE7ccnmhxAW708wU80nPR5kYc1EwQUudgNz+915PKwIDAQABAoIBAQDKkEPJjzNShuFNf1HcrvtrMb/GUGNjMnIadbPQVf60lYQe5rxNVrgLMs5t6OMcYZ8rLu+X81y9F58ujXSM9Tg0ISrQRGTWWOX+pEW0KcmYRFi2HSr5KWysGBqVPvD63m0XKf+fb1DwhMFJSUBqmqE+lHWe+ygHm4MzIgLJbGOvoIQCR0dja7SsMvLOd6EEaI7J9jrCagVlji7jYCbhHpF0IuR2PYiw5C+rIlFK3ghP9yc3FncnUzWAsSM5peKj6sy/diuZup1nXV9soA+I+Xwngo5k2+eBmJQzozDUr2iOKC+l2i6g6amLGJIkipwwyPPlDfsJdNIasTs2dBPSlQIBAoGBAPB13a80ZPiPV/BuxoiSaXRmBWRnD1J7YqMQaJ6B+aHvchm6y2Pl/R5PKXV45geuIOMnIj0qzK0IbjVgbnwQ49VxNkwpy4CErqVhuMNuG+x5yrDdeho8qosVuG6/kog5rDmUXqzV0GGguUF6xyRnVVtZHN1pf7R+FODuCp/s1eAhAoGBAN8l9nIcxtJdmgEpjVam+vFpp8l1LoaKoCzmHm/X0vPnlPI/x+MqdX7F4V+3FwXqgnfnDm+JHjzYqFUSWymiymnmQn+Neb+k5eTArE/7hd2avZrSY6fmlQUjM0X93pbrGCi7hQISMw3vGcl7/LDt2I+N2/nBWuUUyGJTk5EJhvXLAoGAUUBynR5GNBszquGzojhe+97xWYDdk5BvvwvvXggrUwW292zAB0ySoCg9qR0mFVhIcpkpn6OTr7BWlSC1lKScZ+YuY8QHqLCs1uNTbG4Lb3ej/umHtc/kDMVVIc8H85IRWQ+CgkJpfGOz1aVoHyvvksNk1ogsh8/GvE6TNoDvsCECgYEAyY3lkt6xKvPGlcQtWJZMVV+kYM/KLVXrJYLY/RaJASssmr7HUkVYiSA82BJs5jgSjjCSFmZYfIcJTIXe97WFdK+5YrKrxFEyITNysG+0UxxgpAXiY5ZfBZvsxQxwUAqa8LenhN5hZPWRai7mZ/z9PXTZuzZNXlsuP7nTsQ5U648CgYAnGslt2cACcvVuOKSgoUlchl7GOsx+1/l6z2d2cRjZJDPJrBn+fe4/LY28XeKDZoDmvCHFGDoK633x3XBLUzoJN3ReI9nKW/gjwQ61RxhYyKXRhhOU6p9tgdaIP9MO/0tCCfEiyMuy0iVNg7FS3GJHgYp9Jm5+0edXyJpddycfTQ==
-```
-
-### Certificate
-
-```
-MIICuzCCAaMCBgF1CPR3tzANBgkqhkiG9w0BAQsFADAhMR8wHQYDVQQDDBZjb206bGF1ZGVydDpkZW1vOnJlYWxtMB4XDTIwMTAwODE2MDIyMFoXDTMwMTAwODE2MDQwMFowITEfMB0GA1UEAwwWY29tOmxhdWRlcnQ6ZGVtbzpyZWFsbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANGaVKEbgUB8YLNmVtZCIGBpt3jGD8tRFiMl251aDOmLPUsowXKDHBt23y6wjkwjCJ7jjlYWyHtYW5lahQFuDvoOSbsOu7fyiJ2UeEHlzJhKsuwSoS+Ewr8fOxDzMB9c7pgBYrGVCSZ4S5ep5cJZOqlU5coyaDIy8JIMT7iJBq1oKt7n3IzoPoZHReY7z/IhkrxDXTwBmyG0YmqsN/jABGfodbhsy0cVATCqMyzhrYT52Ytyyydlrbf78c3IwlvACN2UMkBVWaaZtVe2xaZk/LBy6dZjGF3Gnqk4KkdrGJodlrhO3HJ5ocQFu9PMFPNJz0eZGHNRMEFLnYDc/vdeTysCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAlGMeMIAIGou/q2C37PMcji142gcC/FPe7/KTHV/x3NAJClW/gsZt9G8zanqi7lZ4Pc9LUg531iPvMIdECQCSOUwVFZwHvMMI8NySP+Bj9I2c31hFhVd0xia1tv47gcRuwIvVdyA7QILpFv4FIeUq2Uz5D+YTfwT99DPekLASvgRVSkqPn2EmvzgE5cUGjDB2NLFaj7Uc4Yh+aNsLTSJHnw+2QIeMC7IBDCQVDm2kljgnpqepE9mW+id/f2Jb+2EMbTVpUKRs4SZzqyJCn6auWYv3uuZ4IjmOE/igTH/FvWRYJIKq1Hs3fojlquOqdt9j1fSAh8JNGESEDiyKgx/yoQ==
-```
-
-
-# Export Keys
-
-The following exported keystores contain a private/public key pair with alias com:laudert:demo:realm.  
-In addition, they contain the DemoRealm certificate (same as provieded in IDP metadata).
-
-* signing-key-keystore.jks
-* signing-key-keystore.p12
-* encryption-key-keystore.jks
-* encryption-key-keystore.p12
-
-
-
-
-# Convert Keys
-
-* Key Alias: com:laudert:demo:realm
-* Key Password: keypassword
-* Realm Certificate Alias: DemoRealm
-* Store Password: storepassword
-
-
-
-
-
-
-
-```
-openssl pkcs12 -in signing-key-keystore.p12 -nocerts -nodes > signing.key
-openssl pkcs12 -in signing-key-keystore.p12 -nokeys -nodes  > signing.crt
-openssl pkcs12 -in encryption-key-keystore.p12 -nocerts -nodes > encryption.key
-openssl pkcs12 -in encryption-key-keystore.p12 -nokeys -nodes  > encryption.crt
-```
-
-openssl pkcs12 -in keystore.p12 -nokeys > cert.crt
-
-
+This key has to be configured if `Encrypt Assertions` is `true`.  
+Keycloak encrypts the SAML-Assertion with the clients public key, and the client uses its private key to decrypt the SAML-Assertion.  
+**Keycloak does not need to know the private key.**
