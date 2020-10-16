@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="KeycloakSaml4WithMetadataReloading" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <module name="spring-authentication-examples.keycloak-saml-4-with-metadata-reloading.main" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="examples.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <option name="SPRING_BOOT_MAIN_CLASS" value="examples.KeycloakSaml4WithMetadataReloading" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
