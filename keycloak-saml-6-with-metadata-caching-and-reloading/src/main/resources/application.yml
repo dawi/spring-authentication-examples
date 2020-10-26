@@ -1,0 +1,27 @@
+logging:
+  level:
+    root: info
+    examples: debug
+    org.springframework.security: debug
+    org.springframework.security.saml2: trace
+
+relying-party-registration:
+
+  refresh-delay: 5000
+  registration-id: metadata
+
+  relying-party-entity-id: demo-saml-client
+  metadata-url: "/saml/metadata/{registrationId}"
+  assertion-consumer-service-binding: POST
+
+  signing:
+    private-key-location: "classpath:credentials/signing.key"
+    certificate-location: "classpath:credentials/signing.crt"
+
+  encryption:
+    private-key-location: "classpath:credentials/encryption.key"
+    certificate-location: "classpath:credentials/encryption.crt"
+
+  identityprovider:
+    metadata-uri: "http://localhost:8081/auth/realms/DemoRealm/protocol/saml/descriptor"
+    metadata-cache-file: "${user.dir}/keycloak-saml-6-with-caching-metadata-reloading/build/ipd-metadata.xml"

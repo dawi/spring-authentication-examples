@@ -3,6 +3,7 @@ pluginManagement {
 
     repositories {
         maven { url = uri("https://repo.spring.io/milestone") }
+        maven { url = uri("https://repo.spring.io/snapshot") }
         gradlePluginPortal()
     }
 
@@ -22,3 +23,4 @@ include("keycloak-saml-2-only-application-properties")
 include("keycloak-saml-3-only-java-config")
 include("keycloak-saml-4-with-metadata-reloading")
 include("keycloak-saml-5-with-bootiful-metadata-reloading")
+include("keycloak-saml-6-with-metadata-caching-and-reloading")
